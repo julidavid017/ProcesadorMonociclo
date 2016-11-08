@@ -9,6 +9,8 @@ entity RegisterFile is
            datoEscribir : in  STD_LOGIC_VECTOR (31 downto 0);
            reset : in  STD_LOGIC;
            crs1 : out  STD_LOGIC_VECTOR (31 downto 0);
+			  write_enable: in STD_LOGIC;
+			  CRd : out STD_LOGIC_VECTOR (31 downto 0);
            crs2 : out  STD_LOGIC_VECTOR (31 downto 0));
 end RegisterFile;
 
@@ -26,12 +28,14 @@ process(reset,nrs1,nrs2,nrd,datoEscribir)
 			if(reset = '1')then
 				crs1 <= (others=>'0');
 				crs2 <= (others=>'0');
+				CRd <= (others=>'0');
 				registro <= (others => x"00000000");
 				
 			else
 				crs1 <= registro(conv_integer(nrs1));
 				crs2 <= registro(conv_integer(nrs2));
-				if(nrd /= "00000")then  
+				CRd <= registro(conv_integer(nrd));
+				if(write_enable= '1' and nrd /= "00000")then  
 					registro(conv_integer(nrd)) <= datoEscribir;
 				end if;
 			end if;
